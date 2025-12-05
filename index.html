@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Dragon Language — Docs (simple)</title>
+  <style>
+    :root{--bg:#0f1720;--card:#0b1220;--muted:#9aa4b2;--accent:#6ee7b7;--accent2:#7dd3fc}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;padding:12px;background:linear-gradient(180deg,#071021 0%, #081226 60%);color:#e6eef6}
+    .wrap{max-width:1000px;margin:12px auto;display:grid;grid-template-columns:260px 1fr;gap:18px}
+    .sidebar{background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .logo{font-weight:700;font-size:18px;color:var(--accent);display:flex;align-items:center;gap:8px}
+    .logo .dot{width:10px;height:10px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 8px rgba(110,231,183,0.18)}
+    nav{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+    a.item{color:var(--muted);text-decoration:none;padding:8px;border-radius:6px;display:block}
+    a.item:hover{background:rgba(125,211,252,0.06);color:#fff}
+    .search{margin-top:10px}
+    input[type=search]{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+
+    .content{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:10px;box-shadow:0 10px 30px rgba(2,6,23,0.6);min-height:70vh}
+    h1{margin:0;font-size:22px}
+    .meta{color:var(--muted);margin-top:6px;font-size:13px}
+    section{margin-top:18px}
+    pre{background:rgba(2,6,23,0.6);padding:12px;border-radius:8px;overflow:auto;color:#dbeafe;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .card{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px}
+    .row{display:flex;gap:10px;align-items:center}
+    small.muted{color:var(--muted)}
+
+    /* tiny responsive */
+    @media (max-width:860px){.wrap{grid-template-columns:1fr;}.sidebar{order:2}}
+
+    /* playful footer */
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:right}
+    .pill{display:inline-block;padding:6px 8px;border-radius:999px;background:linear-gradient(90deg,rgba(125,211,252,0.06),rgba(110,231,183,0.04));color:var(--accent);font-weight:600}
+
+    /* anchors */
+    h2{display:flex;align-items:center;gap:10px}
+    h2 .tag{font-size:12px;color:var(--muted);background:rgba(255,255,255,0.02);padding:4px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <div class="logo"><span class="dot"></span>The Dragon Language</div>
+      <div class="meta">Мини-документация (.tdl)</div>
+
+      <div class="search">
+        <input id="q" type="search" placeholder="быстрый поиск: например func" oninput="filter()" />
+      </div>
+
+      <nav id="nav">
+        <a class="item" href="#overview">Обзор</a>
+        <a class="item" href="#lex">Лексика</a>
+        <a class="item" href="#grammar">Грамматика</a>
+        <a class="item" href="#types">Типы</a>
+        <a class="item" href="#vars">Переменные</a>
+        <a class="item" href="#ops">Операторы</a>
+        <a class="item" href="#ctrl">Управляющие</a>
+        <a class="item" href="#func">Функции</a>
+        <a class="item" href="#examples">Примеры</a>
+        <a class="item" href="#run">Запуск</a>
+      </nav>
+
+      <div style="margin-top:12px" class="card">
+        <div style="font-weight:700">Шустро</div>
+        <div class="muted" style="color:var(--muted);font-size:13px">Код открыт, редактируй и кидай в .tdl</div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header>
+        <h1>The Dragon Language — краткая документация</h1>
+        <div class="meta">Реализация: лёгкий интерпретатор на Python. Спецификация — чисто практическая.</div>
+      </header>
+
+      <section id="overview">
+        <h2>Обзор <span class="tag">overview</span></h2>
+        <p>TDL — минималистичный интерпретируемый язык. В этой странице — самое важное: лексика, грамматика, вызовы и примеры, которые работают с интерпретатором.</p>
+      </section>
+
+      <section id="lex">
+        <h2>Лексика <span class="tag">tokens</span></h2>
+        <p>Основные токены: <code>NUMBER</code>, <code>STRING</code>, <code>NAME</code>, <code>NEWLINE</code>, <code>OP</code>. Комментарии начинаются с <code>#</code>.</p>
+        <pre><code># числа
+x = 42
+# строки
+s = "hello\nworld"
+</code></pre>
+      </section>
+
+      <section id="grammar">
+        <h2>Грамматика <span class="tag">syntax</span></h2>
+        <p>Поддерживаются <code>def</code>, <code>if</code>, <code>while</code>, <code>return</code>. Тела можно писать в <code>{ ... }</code> или одной инструкцией после заголовка.</p>
+        <pre><code>def add(a, b) {
+  return a + b
+}
+
+if x > 0 {
+  print("plus")
+}
+</code></pre>
+      </section>
+
+      <section id="types">
+        <h2>Типы <span class="tag">types</span></h2>
+        <p>Поддерживаются числа (int/float), строки и булевы значения <code>true</code>/<code>false</code>. Значения представлены Python-типами внутри интерпретатора.</p>
+      </section>
+
+      <section id="vars">
+        <h2>Переменные и область <span class="tag">scope</span></h2>
+        <p>Переменные живут в окружениях <code>Env</code>. Присваивание обновляет существующую переменную в ближайшем доступном окружении или создаёт локальную по умолчанию.</p>
+      </section>
+
+      <section id="ops">
+        <h2>Операторы <span class="tag">ops</span></h2>
+        <p>Поддерживаются арифметические, сравнения и логические операторы. Приоритет: <code>or</code> &lt; <code>and</code> &lt; сравнения &lt; <code>+ -</code> &lt; <code>* / %</code>.</p>
+        <pre><code>1 + 2 * 3 == 7
+not false
+</code></pre>
+      </section>
+
+      <section id="ctrl">
+        <h2>Управляющие конструкции <span class="tag">flow</span></h2>
+        <p><code>if</code> и <code>while</code> работают как в знакомых языках. Внутренний <code>return</code> прерывает функцию через исключение-«return».</p>
+      </section>
+
+      <section id="func">
+        <h2>Функции <span class="tag">functions</span></h2>
+        <p>Определяются через <code>def name(params) { ... }</code>. Функции — объекты с замыканием: хранят окружение при создании. Вызов проверяет число аргументов.</p>
+        <pre><code>def greet(name) {
+  print("Hello, " + name)
+}
+
+greet("Alduin")
+</code></pre>
+      </section>
+
+      <section id="examples">
+        <h2>Примеры <span class="tag">examples</span></h2>
+        <div class="row">
+          <div style="flex:1">
+            <div class="card">
+              <strong>FizzBuzz</strong>
+              <pre><code>fori = 1
+while fori <= 15 {
+  if fori % 15 == 0 { print("FizzBuzz") }
+  elif fori % 3 == 0 { print("Fizz") }
+  elif fori % 5 == 0 { print("Buzz") }
+  else { print(fori) }
+  fori = fori + 1
+}
+</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="run">
+        <h2>Запуск <span class="tag">run</span></h2>
+        <p>Запускается через Python-скрипт-интерпретатор. Простейшие шаги:</p>
+        <ol>
+          <li>Сохранить код как <code>file.tdl</code></li>
+          <li>Запустить: <code>python3 interpreter.py file.tdl</code> (имя скрипта — тот код, что у тебя есть)</li>
+        </ol>
+        <div style="margin-top:8px" class="card">
+          <div style="font-weight:700">Playground</div>
+          <p class="muted">Встроенный "play" позволяет вставить пример и увидеть преобразованный AST (ограничено — локально в браузере нет Python-рантайма).</p>
+          <textarea id="example" style="width:100%;height:90px;border-radius:8px;background:rgba(0,0,0,0.25);color:inherit;padding:8px;border:1px solid rgba(255,255,255,0.03)">print("Hello, Dragon!")</textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button onclick="showCode()" style="padding:8px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));cursor:pointer">Показать код</button>
+            <button onclick="copyCode()" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;cursor:pointer">Копировать</button>
+          </div>
+          <pre id="out" style="margin-top:8px"></pre>
+        </div>
+      </section>
+
+      <footer>
+        <span class="pill">simple docs</span> — сделано быстро и с любовью 🐉
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    function filter(){
+      const q = document.getElementById('q').value.toLowerCase();
+      [...document.querySelectorAll('#nav a.item')].forEach(a=>{
+        const t = a.textContent.toLowerCase();
+        a.style.display = t.includes(q) ? 'block' : (q? 'none':'block')
+      })
+    }
+    function showCode(){
+      const v = document.getElementById('example').value;
+      document.getElementById('out').textContent = v;
+    }
+    function copyCode(){
+      const v = document.getElementById('example').value;
+      navigator.clipboard && navigator.clipboard.writeText(v).then(()=>alert('Скопировано в буфер обмена'))
+    }
+  </script>
+</body>
+</html>
